@@ -1,38 +1,37 @@
+PROJECT_DIR := src
+
+ASM_SRCFILES := $(shell find $(PROJDIRS) -type f -name "*.asm")
+CPP_SRCFILES := $(shell find $(PROJDIRS) -type f -name "*.cpp")
+SRCFILES := $(ASM_SRCFILES) $(CPP_SRCFILES)
+HDRFILES := $(shell find $(PROJDIRS) -type f -name "*.hpp")
+OBJFILES := $(patsubst src%,build%,$(patsubst %.cpp,%.o,$(patsubst %.asm,%.s.o,$(SRCFILES))))
+
+ALLFILES = $(SRCFILES) $(HDRFILES)
+
+
 BD = build
 NASM = nasm
 CC = gcc
-FLAGS = -felf64
+СCXX = g++
+ASM_FLAGS = -felf64
 GRUB_FILES = isofiles/boot/grub
 
 default: $(BD)/os.iso
 
 .PHONY: all clean run
 
+build/%.asm.o: src/%.asm
+	mkdir -p $(shell dirname $@)
+	$(NASM) $(ASM_FLAGS) $< -o $@
+
 $(BD):
 	mkdir -p $(BD)
 
+tests:
+	@echo $(ALLFILES)
+	@echo "======="
+	@echo $(OBJFILES)
 
-$(BD)/%.o: %.c $(BD)
-	$(CC) -c $< -o $@ -ffreestanding -O2 -Wall -Wextra
-
-$(BD)/%.o: %.asm $(BD)
-	$(NASM) $(FLAGS) $< -o $@
-
-
-$(BD)/kernel.bin: $(BD)/multiboot_header.o $(BD)/boot.o $(BD)/ckernel.o
-	ld -n -o $@ -T linker.ld $^
-
-$(BD)/os.iso: $(BD)/kernel.bin grub.cfg
-	mkdir -p $(BD)/isofiles/boot/grub
-	cp grub.cfg $(BD)/isofiles/boot/grub
-	cp $< $(BD)/isofiles/boot/
-	grub-mkrescue -o $@ $(BD)/isofiles
-	cp tester.sh $(BD)
-
-all: run
-
-run: $(BD)/os.iso
-	qemu-system-x86_64 -cdrom $(BD)/os.iso
 
 clean:
 	rm -rf $(BD)
