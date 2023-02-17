@@ -1,0 +1,1 @@
+add_library(libc test_lib.c)

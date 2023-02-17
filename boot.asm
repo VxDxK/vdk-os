@@ -1,13 +1,27 @@
-global p2_table
-global start
 extern kernel_main
+global start
+section .multiboot_header
+header_start:
+    dd 0xe85250d6                ; magic number
+    dd 0                         ; protected mode code
+    dd header_end - header_start ; header length
+
+    ; checksum
+    dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
+
+    ; required end tag
+    dw 0    ; type
+    dw 0    ; flags
+    dd 8    ; size
+header_end:
 section .text
 bits 32
+
 start:
 	mov eax, p3_table
     or eax, 0b11
     mov dword [p4_table + 0], eax
-	
+
 	mov eax, p2_table
     or eax, 0b11
     mov dword [p3_table + 0], eax
@@ -32,7 +46,7 @@ jne .map_p2_table
     or eax, 1 << 5
     mov cr4, eax
 
-	;set the long mode bit
+;	set the long mode bit
     mov ecx, 0xC0000080
     rdmsr
     or eax, 1 << 8
@@ -50,11 +64,11 @@ jne .map_p2_table
 	mov ss, ax
 	mov ds, ax
 	mov es, ax
-	
-	;jmp gdt64.code:kernel_main
-	jmp gdt64.code:long_mode_start	
 
+;	jmp gdt64.code:kernel_main
+	jmp gdt64.code:long_mode_start
     hlt
+
 
 
 section .bss
@@ -80,9 +94,8 @@ gdt64:
 section .text
 bits 64
 long_mode_start:
-	;mov rax, 0x2f592f412f4b2f4f
-    ;mov qword [0xb8000], rax
-	
+;	mov rax, 0x2f592f412f4b2f4f
+;   mov qword [0xb8000], rax
+
 	call kernel_main
     hlt
-
