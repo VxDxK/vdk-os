@@ -1,7 +1,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "libc/test_lib.h"
 
 enum vga_color {
     VGA_COLOR_BLACK = 0,
@@ -18,9 +17,10 @@ enum vga_color {
     VGA_COLOR_LIGHT_CYAN = 11,
     VGA_COLOR_LIGHT_RED = 12,
     VGA_COLOR_PINK = 13,
-    VGA_COLOR_LIGHT_YELLOW = 14,
+    VGA_COLOR_YELLOW = 14,
     VGA_COLOR_WHITE = 15,
 };
+
 
 static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) {
     return fg | bg << 4;
@@ -29,7 +29,6 @@ static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) {
 static inline uint16_t vga_entry(unsigned char uc, uint8_t color) {
     return (uint16_t) uc | (uint16_t) color << 8;
 }
-
 
 
 static const size_t VGA_WIDTH = 80;
@@ -44,7 +43,7 @@ void terminal_initialize(void) {
     terminal_row = 0;
     terminal_column = 0;
     terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
-    terminal_buffer = (int64_t*) 0xB8000;
+    terminal_buffer = (int64_t *) 0xB8000;
     for (size_t y = 0; y < VGA_HEIGHT; y++) {
         for (size_t x = 0; x < VGA_WIDTH; x++) {
             const long index = y * VGA_WIDTH + x;
@@ -82,9 +81,17 @@ void terminal_write(const char *data, size_t size) {
         terminal_putchar(data[i]);
 }
 
+size_t strlen(const char *str) {
+    size_t len = 0;
+    while (str[len])
+        len++;
+    return len;
+}
+
 void terminal_writestring(const char *data) {
     terminal_write(data, strlen(data));
 }
+
 
 void terminal_writenumber(int64_t val) {
     if (val == 0) {
@@ -98,9 +105,11 @@ void terminal_writenumber(int64_t val) {
 
 void kernel_main(void) {
     terminal_initialize();
-    terminal_setcolor(VGA_COLOR_PINK);
+    terminal_setcolor(VGA_COLOR_WHITE);
     terminal_writestring("Hello, kernel World!\n");
-    terminal_setcolor(VGA_COLOR_CYAN);
-    terminal_writestring("Bruh\n");
+    terminal_setcolor(VGA_COLOR_BLUE);
     terminal_writenumber(1234);
+    terminal_putchar('\n');
+    terminal_setcolor(VGA_COLOR_LIGHT_RED);
+    terminal_writestring("USSR\n");
 }

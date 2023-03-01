@@ -21,17 +21,9 @@ set(CMAKE_C_FLAGS "-ffreestanding -O2 -Wall -Wextra  -nostdlib")
 set(KERNEL_BIN "kernel.bin")
 set(KERNEL_ISO "vdk-os.iso")
 
-add_subdirectory(libc)
+add_subdirectory(kernel)
 
 ## Building the kernel binary
-add_executable(${KERNEL_BIN} boot.asm ckernel.c)
-target_link_libraries(${KERNEL_BIN} libc)
-#set_target_properties(${KERNEL_BIN} PROPERTIES LINK_FLAGS "-T ${CMAKE_SOURCE_DIR}/linker.ld -ffreestanding -O2 -nostdlib -lgcc")
-set_target_properties(${KERNEL_BIN} PROPERTIES LINK_FLAGS "-T ${CMAKE_SOURCE_DIR}/linker.ld -n")
-add_custom_command(TARGET ${KERNEL_BIN} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/out
-        COMMAND ${CMAKE_COMMAND} -E copy ${KERNEL_BIN} ${CMAKE_SOURCE_DIR}/out/)
-
 add_custom_target(${KERNEL_ISO}
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/create-iso.sh ${CMAKE_CURRENT_BINARY_DIR}/create-iso.sh
         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/create-iso.sh)
