@@ -1,4 +1,4 @@
-extern kernel_main
+extern kmain
 global start
 section .multiboot_header
 header_start:
@@ -65,7 +65,7 @@ jne .map_p2_table
 	mov ds, ax
 	mov es, ax
 
-;	jmp gdt64.code:kernel_main
+;	jmp gdt64.code:kmain
 	jmp gdt64.code:long_mode_start
     hlt
 
@@ -97,5 +97,5 @@ long_mode_start:
 ;	mov rax, 0x2f592f412f4b2f4f
 ;   mov qword [0xb8000], rax
 
-	call kernel_main
+	call kmain
     hlt

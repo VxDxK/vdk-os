@@ -12,6 +12,8 @@ set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_LINKER ld)
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_LINKER> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_LINKER> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+
 #set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_LINKER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
 
@@ -20,10 +22,12 @@ set(CMAKE_C_FLAGS "-ffreestanding -O2 -Wall -Wextra  -nostdlib")
 
 set(KERNEL_BIN "kernel.bin")
 set(KERNEL_ISO "vdk-os.iso")
+set(KERNEL_ARCH "x86_64")
+set(ARCH_DIR ${CMAKE_SOURCE_DIR}/kernel/arch/${KERNEL_ARCH})
 
 add_subdirectory(kernel)
 
-## Building the kernel binary
+## Building the kernel iso
 add_custom_target(${KERNEL_ISO}
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/create-iso.sh ${CMAKE_CURRENT_BINARY_DIR}/create-iso.sh
         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/create-iso.sh)
