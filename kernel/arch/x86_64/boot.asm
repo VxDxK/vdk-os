@@ -1,23 +1,10 @@
 extern kmain
 global start
-section .multiboot_header
-header_start:
-    dd 0xe85250d6                ; magic number
-    dd 0                         ; protected mode code
-    dd header_end - header_start ; header length
-
-    ; checksum
-    dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
-
-    ; required end tag
-    dw 0    ; type
-    dw 0    ; flags
-    dd 8    ; size
-header_end:
 section .text
 bits 32
 
 start:
+    mov esp, stack_top
 	mov eax, p3_table
     or eax, 0b11
     mov dword [p4_table + 0], eax
@@ -36,6 +23,7 @@ start:
     inc ecx
     cmp ecx, 512
 jne .map_p2_table
+
 
 	;save page table address in cr3
 	mov eax, p4_table
@@ -70,6 +58,9 @@ jne .map_p2_table
     hlt
 
 
+global p4_table
+global p3_table
+global p2_table
 
 section .bss
 align 4096
@@ -79,6 +70,9 @@ p3_table:
     resb 4096
 p2_table:
     resb 4096
+stack_bottom:
+    resb 4096 * 4
+stack_top:
 
 section .rodata
 gdt64:
@@ -94,8 +88,5 @@ gdt64:
 section .text
 bits 64
 long_mode_start:
-;	mov rax, 0x2f592f412f4b2f4f
-;   mov qword [0xb8000], rax
-
 	call kmain
     hlt

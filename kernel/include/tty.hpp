@@ -1,8 +1,9 @@
 #ifndef VDK_OS_TTY_HPP
 #define VDK_OS_TTY_HPP
+
 #include <cstddef>
 #include <cstdint>
-
+#include <colored_char.hpp>
 enum vga_color {
     VGA_COLOR_BLACK = 0,
     VGA_COLOR_BLUE = 1,
@@ -34,11 +35,24 @@ void terminal_setcolor(uint8_t color);
 
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
 
+void terminal_put_entry(char c, uint8_t color);
+
+void terminal_put_colored_char(colored_char cc);
+
 void terminal_putchar(char c);
 
 void terminal_write(const char *data, size_t size);
 
+void terminal_clear();
+
+void terminal_clear(uint8_t color);
+
 void terminal_writestring(const char *data);
 
-void terminal_writenumber(int64_t val);
+void terminal_writenumber(uint64_t val);
+
+void terminal_write_panic_label();
+
+void terminal_print_logo();
+
 #endif //VDK_OS_TTY_HPP
