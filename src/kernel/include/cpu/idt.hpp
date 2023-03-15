@@ -2,15 +2,8 @@
 #define VDK_OS_IDT_HPP
 
 #include <cstdint>
-#include "util.hpp"
 #include "exceptions.hpp"
-
-struct __attribute__((__packed__)) idtr {
-    uint16_t limit;
-    uint64_t offset;
-};
-
-assert_size(idtr, 10);
+#include "cpu/idtr.hpp"
 
 class __attribute__((__packed__)) idt_descriptor {
 public:
@@ -37,12 +30,10 @@ private:
     uint32_t zero = 0x00000000;
 };
 
-assert_size(idt_descriptor, 16);
 
 
 void init_idt();
 
-extern "C" void load_idt();
-extern "C" void make_bruh();
-extern "C" void fuck_all();
+extern "C" void load_idt(idtr &reg);
+
 #endif //VDK_OS_IDT_HPP

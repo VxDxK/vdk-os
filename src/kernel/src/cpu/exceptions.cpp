@@ -1,5 +1,4 @@
-
-#include "exceptions.hpp"
+#include <cpu/exceptions.hpp>
 
 void handler_dummy() {
     panic("there is no handler yet");

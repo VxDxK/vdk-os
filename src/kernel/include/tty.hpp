@@ -3,7 +3,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <colored_char.hpp>
 enum vga_color {
     VGA_COLOR_BLACK = 0,
     VGA_COLOR_BLUE = 1,
@@ -37,7 +36,6 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
 
 void terminal_put_entry(char c, uint8_t color);
 
-void terminal_put_colored_char(colored_char cc);
 
 void terminal_putchar(char c);
 

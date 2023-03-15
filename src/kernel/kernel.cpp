@@ -1,10 +1,11 @@
+#include <util/static_asserts.hpp>
+#include <util/util.hpp>
+#include <cpu/idt.hpp>
+#include <mem/mem.hpp>
 #include <tty.hpp>
-#include <idt.hpp>
 #include <cstdint>
 
-extern uint64_t *p4_table;
-extern uint64_t *p3_table;
-extern uint64_t *p2_table;
+extern "C" uint64_t p4_table;
 
 struct __attribute__((__packed__)) page {
     uint32_t present: 1;
@@ -18,15 +19,19 @@ struct __attribute__((__packed__)) page {
     uint32_t global: 1;
     uint32_t gp: 3;
     uint64_t addr: 52;
+
+    explicit page(uint64_t page_value) {
+        *((uint64_t*)this) = page_value;
+    }
+
 };
 
 assert_size(page, 8);
 
-
-
 extern "C" void kmain() {
     //enable interrupts
     init_idt();
+
 
     terminal_initialize();
     terminal_setcolor(VGA_COLOR_WHITE);
@@ -36,26 +41,15 @@ extern "C" void kmain() {
     terminal_writenumber(1234);
     terminal_putchar('\n');
     terminal_setcolor(vga_entry_color(VGA_COLOR_BLACK, VGA_COLOR_WHITE));
-    terminal_writestring("REDsssdsd\n");
+    terminal_writestring("RED\n");
 
-    terminal_writenumber((uint64_t)p4_table);
-    terminal_putchar('\n');
-    terminal_writenumber((uint64_t)p3_table);
-    terminal_putchar('\n');
-    terminal_writenumber((uint64_t)p2_table);
-    terminal_putchar('\n');
+    terminal_writenumber(read_cr3());
 
 
-//    uint8_t* b = (uint8_t*)(0x200000 * 512 - 1);
-    uint8_t* b = (uint8_t*)(0x200000 * 512);
-
-    b[0] = 1;
-
-//    asm(".intel_syntax;int 14");
-//    asm("int 14");
+    uint8_t* b = (uint8_t*)(0x200000 * 512 - 1);
+//    b[0] = 1;
 
     //Page fault
 //    b[1] = 1;
-
 }
 

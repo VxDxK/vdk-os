@@ -1,11 +1,3 @@
-extern idtr_ptr
-
-global load_idt
-load_idt:
-    lidt [idtr_ptr]
-    ret
-
-
 global make_bruh
 make_bruh:
     mov rax, 0x2f482f552f522f42

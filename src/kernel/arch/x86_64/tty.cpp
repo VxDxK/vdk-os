@@ -44,11 +44,6 @@ void terminal_put_entry(char c, uint8_t color) {
     terminal_putentryat(c, color, terminal_column, terminal_row);
 }
 
-void terminal_put_colored_char(colored_char cc) {
-    const size_t index = terminal_row * VGA_WIDTH + terminal_column;
-    terminal_buffer[index] = cc.get_vga_entry();
-}
-
 void terminal_putchar(char c) {
     if (c == '\n') {
         ++terminal_row;

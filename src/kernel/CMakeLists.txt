@@ -14,7 +14,6 @@ file(GLOB_RECURSE HEADER_FILES "include/*.hpp")
 add_executable(${KERNEL_BIN} kernel.cpp ${ARCH_SRC_FILES} ${SRC_FILES} ${HEADER_FILES})
 target_include_directories(${KERNEL_BIN} PRIVATE "include")
 
-target_include_directories(${KERNEL_BIN} PRIVATE "include")
 set_target_properties(${KERNEL_BIN} PROPERTIES LINK_FLAGS "-T ${ARCH_DIR}/linker.ld -n")
 set_target_properties(${KERNEL_BIN} PROPERTIES LINK_DEPENDS ${ARCH_DIR}/linker.ld)
 
