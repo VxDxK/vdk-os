@@ -12,6 +12,7 @@ file(GLOB_RECURSE HEADER_FILES "include/*.hpp")
 #target_include_directories(kernel_lib PRIVATE "include")
 
 add_executable(${KERNEL_BIN} kernel.cpp ${ARCH_SRC_FILES} ${SRC_FILES} ${HEADER_FILES})
+target_link_libraries(${KERNEL_BIN} PRIVATE libcpp )
 target_include_directories(${KERNEL_BIN} PRIVATE "include")
 
 set_target_properties(${KERNEL_BIN} PROPERTIES LINK_FLAGS "-T ${ARCH_DIR}/linker.ld -n")

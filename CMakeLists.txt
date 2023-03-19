@@ -29,6 +29,7 @@ set(KERNEL_BIN "kernel.bin")
 set(KERNEL_ISO "vdk-os.iso")
 set(KERNEL_ARCH "x86_64")
 
+add_subdirectory(src/libcpp)
 add_subdirectory(src/kernel)
 
 # Building the kernel iso

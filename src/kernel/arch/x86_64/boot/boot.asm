@@ -1,10 +1,20 @@
 extern kmain
-global start
+extern error
+extern check_multiboot
+extern check_cpuid
+extern check_long_mode
+
+global boot
+
 section .text
 bits 32
 
-start:
+boot:
     mov esp, stack_top
+    call check_multiboot
+    call check_cpuid
+    call check_long_mode
+
 	mov eax, p3_table
     or eax, 0b11
     mov dword [p4_table + 0], eax
@@ -71,7 +81,7 @@ p3_table:
 p2_table:
     resb 4096
 stack_bottom:
-    resb 4096 * 4
+    resb 1024 * 16
 stack_top:
 
 section .rodata
@@ -89,4 +99,5 @@ section .text
 bits 64
 long_mode_start:
 	call kmain
+	cli
     hlt

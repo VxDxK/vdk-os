@@ -1,4 +1,4 @@
-ENTRY(start)
+ENTRY(boot)
 
 SECTIONS {
     . = 1M;
@@ -27,6 +27,8 @@ SECTIONS {
 		*(COMMON)
 		*(.bss)
 	}
+
+    kernel_end = .;
 
 }
 
