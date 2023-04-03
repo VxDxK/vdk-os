@@ -3,6 +3,9 @@ extern error
 extern check_multiboot
 extern check_cpuid
 extern check_long_mode
+extern enable_long_mode
+extern enable_pae
+extern enable_paging
 
 global boot
 
@@ -11,9 +14,11 @@ bits 32
 
 boot:
     mov esp, stack_top
+    push ebx
     call check_multiboot
     call check_cpuid
     call check_long_mode
+
 
 	mov eax, p3_table
     or eax, 0b11
@@ -22,6 +27,7 @@ boot:
 	mov eax, p2_table
     or eax, 0b11
     mov dword [p3_table + 0], eax
+
 
 	mov ecx, 0         ; counter variable
 .map_p2_table:
@@ -34,27 +40,15 @@ boot:
     cmp ecx, 512
 jne .map_p2_table
 
-
-	;save page table address in cr3
 	mov eax, p4_table
     mov cr3, eax
 
-	; enable PAE
-    mov eax, cr4
-    or eax, 1 << 5
-    mov cr4, eax
+    call enable_pae
 
-;	set the long mode bit
-    mov ecx, 0xC0000080
-    rdmsr
-    or eax, 1 << 8
-    wrmsr
+    call enable_long_mode
+    call enable_paging
 
-	;enable paging
-    mov eax, cr0
-    or eax, 1 << 31
-    or eax, 1 << 16
-    mov cr0, eax
+
 
 	lgdt [gdt64.pointer]
 
@@ -64,6 +58,8 @@ jne .map_p2_table
 	mov es, ax
 
 ;	jmp gdt64.code:kmain
+    pop ebx
+    mov edi, ebx
 	jmp gdt64.code:long_mode_start
     hlt
 
@@ -73,6 +69,7 @@ global p3_table
 global p2_table
 
 section .bss
+
 align 4096
 p4_table:
     resb 4096
@@ -98,6 +95,7 @@ gdt64:
 section .text
 bits 64
 long_mode_start:
+    mov rdi, rbx
 	call kmain
 	cli
     hlt

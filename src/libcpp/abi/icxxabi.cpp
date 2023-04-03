@@ -47,8 +47,8 @@ void __cxa_finalize(void *f)
                 * will cause undefined behaviour. Remember that linear address 0,
                 * in a non-virtual address space (physical) contains the IVT and BDA.
                 *
-                * In a virtual environment, the kernel will receive a page fault, and then probably
-                * map in some trash, or a blank page, or something stupid like that.
+                * In a virtual environment, the kernel will receive a page_table_entry fault, and then probably
+                * map in some trash, or a blank page_table_entry, or something stupid like that.
                 * This will result in the processor executing trash, and...we don't want that.
                 **/
                 (*__atexit_funcs[i].destructor_func)(__atexit_funcs[i].obj_ptr);

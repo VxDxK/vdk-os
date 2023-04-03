@@ -1,8 +1,9 @@
 #ifndef VDK_OS_EXCEPTIONS_HPP
 #define VDK_OS_EXCEPTIONS_HPP
+
 #include "tty.hpp"
 #include "panic.hpp"
-//TODO add all
+
 enum exception_type {
     EXCEPTION_DIVISION_ERROR = 0,
     EXCEPTION_DEBUG = 1,
@@ -18,11 +19,20 @@ enum exception_type {
     EXCEPTION_SEGMENT_NOT_PRESENT = 11,
     EXCEPTION_STACK_SEGMENT_FAULT = 12,
     EXCEPTION_GENERAL_PROTECTION_FAULT = 13,
-    EXCEPTION_PAGE_FAULT = 14
+    EXCEPTION_PAGE_FAULT = 14,
+    EXCEPTION_X87_FLOATING_POINT = 16,
+    EXCEPTION_ALIGNMENT_CHECK = 17,
+    EXCEPTION_MACHINE_CHECK = 18,
+    EXCEPTION_SIMD_FLOATING_POINT = 19,
+    EXCEPTION_VIRTUALIZATION = 20,
+    EXCEPTION_CONTROL_PROTECTION = 21,
+    EXCEPTION_HYPERVISOR_INJECTION = 28,
+    EXCEPTION_VMM_COMMUNICATION = 29,
+    EXCEPTION_SECURITY = 30
 };
 
 
-using exception_handler = void(*)();
+using exception_handler = void (*)();
 
 void handler_dummy();
 

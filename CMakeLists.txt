@@ -17,13 +17,13 @@ set(CMAKE_ASM_LINK_EXECUTABLE "<CMAKE_LINKER> <CMAKE_ASM_LINK_FLAGS> <LINK_FLAGS
 
 #set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_LINKER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
+#set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Werror")
 
-set(CMAKE_CXX_FLAGS "-ffreestanding -O0 -Wall -Wextra -ggdb -fno-exceptions -fno-rtti -masm=intel")
-set(CMAKE_C_FLAGS "-ffreestanding -O0 -Wall -Wextra -ggdb  -nostdlib -masm=intel")
+set(CMAKE_CXX_FLAGS "-ffreestanding -nostdlib -O0 -Wall -Wextra -ggdb -fno-exceptions -fno-rtti -masm=intel")
+set(CMAKE_C_FLAGS "-ffreestanding -nostdlib -O0 -Wall -Wextra -ggdb  -nostdlib -masm=intel")
 set(CMAKE_ASM_FLAGS "-ggdb")
 
 set(CMAKE_BUILD_TYPE Debug)
-
 
 set(KERNEL_BIN "kernel.bin")
 set(KERNEL_ISO "vdk-os.iso")

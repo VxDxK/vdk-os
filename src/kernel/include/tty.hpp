@@ -28,7 +28,7 @@ uint8_t vga_entry_color(vga_color fg, vga_color bg);
 
 uint16_t vga_entry(unsigned char uc, uint8_t color);
 
-void terminal_initialize();
+extern "C" void terminal_initialize();
 
 void terminal_setcolor(uint8_t color);
 

@@ -31,8 +31,7 @@ private:
 };
 
 
-
-void init_idt();
+extern "C" void init_idt();
 
 extern "C" void load_idt(idtr &reg);
 
