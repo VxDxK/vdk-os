@@ -42,7 +42,7 @@ void __cxa_finalize(void *f)
             if (__atexit_funcs[i].destructor_func)
             {
                 /* ^^^ That if statement is a safeguard...
-                * To make sure we don't call any entries that have already been called and unset at runtime.
+                * To make sure we don't call any gdt_entries that have already been called and unset at runtime.
                 * Those will contain a value of 0, and calling a function with value 0
                 * will cause undefined behaviour. Remember that linear address 0,
                 * in a non-virtual address space (physical) contains the IVT and BDA.
@@ -62,13 +62,13 @@ void __cxa_finalize(void *f)
         /*
         * The ABI states that multiple calls to the __cxa_finalize(destructor_func_ptr) function
         * should not destroy objects multiple times. Only one call is needed to eliminate multiple
-        * entries with the same address.
+        * gdt_entries with the same address.
         *
         * FIXME:
         * This presents the obvious problem: all destructors must be stored in the order they
         * were placed in the list. I.e: the last initialized object's destructor must be first
         * in the list of destructors to be called. But removing a destructor from the list at runtime
-        * creates holes in the table with unfilled entries.
+        * creates holes in the table with unfilled gdt_entries.
         * Remember that the insertion algorithm in __cxa_atexit simply inserts the next destructor
         * at the end of the table. So, we have holes with our current algorithm
         * This function should be modified to move all the destructors above the one currently

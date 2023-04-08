@@ -6,6 +6,7 @@ extern check_long_mode
 extern enable_long_mode
 extern enable_pae
 extern enable_paging
+extern c_gdtr
 
 global boot
 
@@ -48,19 +49,22 @@ jne .map_p2_table
     call enable_long_mode
     call enable_paging
 
+    extern init_gdt
 
 
-	lgdt [gdt64.pointer]
+	lgdt [c_gdtr]
 
-	mov ax, gdt64.data
+	;	lgdt [gdt64.pointer]
+
+    ;data is second entry in gdt, 2 << 3 = 0x10
+	mov ax, 0x10
 	mov ss, ax
 	mov ds, ax
 	mov es, ax
 
-;	jmp gdt64.code:kmain
     pop ebx
     mov edi, ebx
-	jmp gdt64.code:long_mode_start
+    jmp 0x8:long_mode_start
     hlt
 
 
@@ -81,16 +85,16 @@ stack_bottom:
     resb 1024 * 16
 stack_top:
 
-section .rodata
-gdt64:
-    dq 0
-.code: equ $ - gdt64
-    dq (1<<44) | (1<<47) | (1<<41) | (1<<43) | (1<<53)
-.data: equ $ - gdt64
-    dq (1<<44) | (1<<47) | (1<<41)
-.pointer:
-    dw .pointer - gdt64 - 1
-    dq gdt64
+;section .rodata
+;gdt64:
+;    dq 0
+;.code: equ $ - gdt64
+;    dq (1<<44) | (1<<47) | (1<<41) | (1<<43) | (1<<53)
+;.data: equ $ - gdt64
+;    dq (1<<44) | (1<<47) | (1<<41)
+;.pointer:
+;    dw .pointer - gdt64 - 1
+;    dq gdt64
 
 section .text
 bits 64
