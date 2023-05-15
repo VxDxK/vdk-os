@@ -7,8 +7,11 @@
 #include <mem/page_table_entry.hpp>
 #include <cpu/gdt/gdt_utils.hpp>
 #include <cpu/gdt/gdt_descriptor.hpp>
+#include <boot/multiboot_stuff.hpp>
+#include <boot/multiboot_tag_iterator.hpp>
 
-extern "C" void kmain(uint64_t *grub_info) {
+
+extern "C" void kmain(uint64_t grub_info) {
     //enable interrupts
     init_idt();
 
@@ -32,23 +35,40 @@ extern "C" void kmain(uint64_t *grub_info) {
     terminal_writestring("\nmultiboot: ");
     terminal_writenumber((uint64_t) grub_info);
 
+    uint64_t size = *(uint64_t *) grub_info;
+    terminal_writestring("\n");
+    terminal_writenumber(size);
+    terminal_writestring("\n");
+
+    multiboot_tag *tag = (multiboot_tag *) (grub_info + 8);
+    multiboot_tag_iterator iterator(tag);
+
+
+    while (iterator) {
+        terminal_writenumber(iterator->type);
+        terminal_writestring(" ");
+        ++iterator;
+    }
+
+    terminal_writestring("\n");
+
 
     int64_t *cr3_val = (int64_t *) read_cr3();
 
-    uint64_t bsd = *cr3_val;
 
-    terminal_putchar('\n');
-    terminal_writenumber(*cr3_val);
-    terminal_putchar('\n');
-    terminal_writenumber(*(int64_t *) get_p4_table());
+//    if (((uint64_t) (grub_info)) & 7) {
+//        terminal_writestring("bruh");
+//    } else {
+//        terminal_writestring("aligned");
+//    }
 
-    gdtr gdtr;
-    store_gdt(gdtr);
-    auto *entries = (gdt_descriptor *) gdtr.offset;
-    for (int i = 0; i < 3; ++i) {
-        gdt_descriptor now = entries[i];
-        gdt_descriptor entry = now;
-    }
+//    gdtr gdtr;
+//    store_gdt(gdtr);
+//    auto *entries = (gdt_descriptor *) gdtr.offset;
+//    for (int i = 0; i < 3; ++i) {
+//        gdt_descriptor now = entries[i];
+//        gdt_descriptor entry = now;
+//    }
 
 //    page_table_entry pg4 (*cr3_val);
 //    page_table_entry pg4_a (*(int64_t *)get_p4_table());
